@@ -1,0 +1,39 @@
+name: install-test
+
+on:
+  push:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 6 * * 1' # weekly, catches broken URLs/updates
+
+permissions:
+  contents: read
+
+jobs:
+  brew:
+    name: brew install (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { os: macos-15 }
+          - { os: ubuntu-24.04 }
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Install and test via Homebrew
+        run: |
+          set -euo pipefail
+          brew install geyutu6755/tap/shipsmoke
+          shipsmoke version
+          test -x "$(which shipsmoke)"
+
+  scoop:
+    name: scoop install
+    runs-on: windows-2025
+    steps:
+      - name: Install and test via Scoop
+        run: |
+          scoop bucket add geyutu6755 https://github.com/geyutu6755/scoop-bucket
+          scoop install shipsmoke
+          shipsmoke version
+        shell: powershell
