@@ -11,22 +11,9 @@ permissions:
 
 jobs:
   brew:
-    name: brew install (${{ matrix.os }})
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - { os: macos-15 }
-          - { os: ubuntu-24.04 }
-    runs-on: ${{ matrix.os }}
+    name: brew install (macos-15)
+    runs-on: macos-15
     steps:
-      - name: Ensure Homebrew (ubuntu runners do not preinstall it)
-        if: runner.os == 'Linux'
-        run: |
-          test -x /home/linuxbrew/.linuxbrew/bin/brew || {
-            /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-            echo "/home/linuxbrew/.linuxbrew/bin" >> "$GITHUB_PATH"
-          }
       - name: Install and test via Homebrew
         run: |
           set -euo pipefail
@@ -34,8 +21,24 @@ jobs:
           shipsmoke version
           test -x "$(which shipsmoke)"
 
+  # Homebrew does not support Linux on GitHub's ubuntu runners without a
+  # manual Linuxbrew install; instead this job verifies the exact linux
+  # assets the formula references, including their checksums.txt entry.
+  linux-assets:
+    name: formula linux assets (ubuntu-24.04)
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Download, checksum-verify and run the linux/amd64 asset
+        run: |
+          set -euo pipefail
+          curl -fsSL -o shipsmoke.tar.gz             https://github.com/geyutu6755/shipsmoke/releases/download/v1.0.2/shipsmoke_linux_amd64.tar.gz
+          curl -fsSL -o checksums.txt             https://github.com/geyutu6755/shipsmoke/releases/download/v1.0.2/checksums.txt
+          grep "shipsmoke_linux_amd64.tar.gz" checksums.txt | sha256sum -c -
+          tar -xzf shipsmoke.tar.gz
+          ./shipsmoke version
+
   scoop:
-    name: scoop install
+    name: scoop install (windows-2025)
     runs-on: windows-2025
     steps:
       - name: Ensure Scoop (windows runners do not preinstall it)
