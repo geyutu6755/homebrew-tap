@@ -1,25 +1,25 @@
 class Shipsmoke < Formula
   desc "Test what users actually download: verify release artifacts run on the target OS"
   homepage "https://github.com/geyutu6755/shipsmoke"
-  version "1.0.3"
+  version "1.0.4"
   license "MIT"
 
   on_macos do
     if Hardware::CPU.intel?
       url "https://github.com/geyutu6755/shipsmoke/releases/download/v#{version}/shipsmoke_darwin_amd64.tar.gz"
-      sha256 "8a1fd6d07acebbc799f0fc2b2400757ec002592bd1bd3b36c54f66cde3af6647"
+      sha256 "9b5b76d1868092b36f0c482ee9534632f9c01dc86585e813562891ea9a0379c9"
     else
       url "https://github.com/geyutu6755/shipsmoke/releases/download/v#{version}/shipsmoke_darwin_arm64.tar.gz"
-      sha256 "09d7989df045ebe43d69026c48a5978efdc4b807213637aeeae8cd1e3f9eab1f"
+      sha256 "d423a12911c850d13e46688da866499020e87b7d9ee861771ed36ffca87dd863"
     end
   end
   on_linux do
     if Hardware::CPU.intel? && Hardware::CPU.is_64_bit?
       url "https://github.com/geyutu6755/shipsmoke/releases/download/v#{version}/shipsmoke_linux_amd64.tar.gz"
-      sha256 "f3fc95e2517778ebcc2da7e2a363a6e00591b132a5268a7a8f85fc88d4a6ec67"
+      sha256 "d9c31395b8bc64b68dc80f529b8c5f76ce04dcfbcec1ff7312c7c8a7920e5d56"
     elsif Hardware::CPU.arm? && Hardware::CPU.is_64_bit?
       url "https://github.com/geyutu6755/shipsmoke/releases/download/v#{version}/shipsmoke_linux_arm64.tar.gz"
-      sha256 "5f2582d5849d9d0898e40503c8b6d916dbdacf8630e8ae53e5f8761df1d19bd1"
+      sha256 "740cb1298b1c833db5f37549d300b70582869a9ba92e7a0b781e7ba2c94e178b"
     end
   end
 
